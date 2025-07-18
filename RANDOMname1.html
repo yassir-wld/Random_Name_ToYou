@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Name Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .category-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .name-display {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .generated-name {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .placeholder {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            margin: 0 10px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 0 10px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .copy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .history {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .history h3 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .generated-name {
+                font-size: 1.8rem;
+            }
+            
+            .category-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Name Generator ✨</h1>
+        <p class="subtitle">Generate random names for babies, companies, pets, and more!</p>
+        
+        <div class="category-selector">
+            <button class="category-btn active" data-category="baby">👶 Baby Names</button>
+            <button class="category-btn" data-category="company">🏢 Company Names</button>
+            <button class="category-btn" data-category="pet">🐕 Pet Names</button>
+            <button class="category-btn" data-category="fantasy">🧙 Fantasy Names</button>
+            <button class="category-btn" data-category="band">🎸 Band Names</button>
+            <button class="category-btn" data-category="restaurant">🍽️ Restaurant Names</button>
+        </div>
+        
+        <div class="name-display">
+            <div class="placeholder">Click "Generate Name" to get started!</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="generate-btn" onclick="generateName()">🎲 Generate Name</button>
+            <button class="copy-btn" onclick="copyToClipboard()" disabled>📋 Copy</button>
+        </div>
+        
+        <div class="history">
+            <h3>Recent Names</h3>
+            <div class="history-list" id="historyList">
+                <div class="history-item">No names generated yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nameData = {
+            baby: {
+                male: ["Mohammed", "Ahmed", "Ali", "Omar", "Youssef", "Hassan", "Hussein", "Ibrahim", "Abdallah", "Khalid",'Alexander', 'Benjamin', 'Christopher', 'Daniel', 'Ethan', 'Gabriel', 'Henry', 'Isaac', 'Jacob', 'Kevin', 'Leonardo', 'Matthew', 'Nathan', 'Oliver', 'Patrick', 'Quinn', 'Robert', 'Samuel', 'Thomas', 'Victor', 'William', 'Xavier', 'Zachary'],
+                female: ["Fatima", "Aicha", "Zahra", "Mariam", "Layla", "Sara", "Rania", "Salma", "Nour", "Yasmine",'Amelia', 'Bella', 'Charlotte', 'Diana', 'Emma', 'Fiona', 'Grace', 'Hannah', 'Isabella', 'Julia', 'Katherine', 'Luna', 'Maya', 'Natalie', 'Olivia', 'Penelope', 'Quinn', 'Ruby', 'Sophia', 'Taylor', 'Una', 'Victoria', 'Willow', 'Zoe']
+            },
+            company: [
+                'TechNova Solutions', 'BlueWave Dynamics', 'Pinnacle Ventures', 'Quantum Innovations', 'Stellar Enterprises', 'Nexus Digital', 'Fusion Labs', 'Crystal Peak Solutions', 'Velocity Systems', 'Infinity Corp', 'Phoenix Technologies', 'Aurora Dynamics', 'Zenith Solutions', 'Catalyst Group', 'Apex Innovations', 'Meridian Systems', 'Prism Technologies', 'Vortex Enterprises', 'Summit Solutions', 'Eclipse Digital'
+            ],
+            pet: [
+                'Buddy', 'Luna', 'Charlie', 'Bella', 'Max', 'Lucy', 'Cooper', 'Daisy', 'Rocky', 'Molly', 'Bear', 'Sadie', 'Duke', 'Lola', 'Zeus', 'Penny', 'Oliver', 'Rosie', 'Leo', 'Chloe', 'Milo', 'Zoe', 'Jasper', 'Ruby', 'Oscar', 'Lily', 'Finn', 'Stella', 'Bentley', 'Nala'
+            ],
+            fantasy: [
+                'Aelindra Moonwhisper', 'Thorin Ironforge', 'Lyralei Starweaver', 'Gareth Shadowbane', 'Seraphina Dawnbringer', 'Aldric Stormwind', 'Elara Nightshade', 'Theron Goldleaf', 'Aria Frostborn', 'Darius Flameward', 'Celeste Silverwind', 'Valen Dragonheart', 'Kaelen Earthshaker', 'Raven Darkwood', 'Orion Lightbringer'
+            ],
+            band: [
+                'Electric Shadows', 'Crimson Echo', 'Neon Rebellion', 'Midnight Pulse', 'Stellar Storm', 'Quantum Groove', 'Velvet Thunder', 'Chrome Hearts', 'Phoenix Rising', 'Silver Paradox', 'Dark Matter', 'Crystal Resonance', 'Infinite Loop', 'Sonic Bloom', 'Vapor Trail', 'Lightning Strike', 'Cosmic Drift', 'Metal Rain', 'Dream Catcher', 'Wild Fire'
+            ],
+            restaurant: [
+                'The Golden Spoon', 'Savory Delights', 'Garden Bistro', 'Flame & Fork', 'The Rustic Table', 'Moonlight Café', 'Spice Haven', 'The Copper Kettle', 'Harbor View Grill', 'Sunset Terrace', 'The Artisan Kitchen', 'Velvet Lounge', 'Fresh Harvest', 'The Corner Spot', 'Maple & Sage', 'Ocean Breeze', 'The Daily Grind', 'Ember & Ash', 'The Green Plate', 'Stellar Dining'
+            ]
+        };
+
+        let currentCategory = 'baby';
+        let currentName = '';
+        let nameHistory = [];
+
+        // Category selection
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.category;
+                
+                // Reset display
+                document.querySelector('.name-display').innerHTML = '<div class="placeholder">Click "Generate Name" to get started!</div>';
+                document.querySelector('.copy-btn').disabled = true;
+                currentName = '';
+            });
+        });
+
+        function generateName() {
+            let name;
+            
+            if (currentCategory === 'baby') {
+                // For baby names, randomly choose male or female
+                const gender = Math.random() < 0.5 ? 'male' : 'female';
+                const names = nameData.baby[gender];
+                name = names[Math.floor(Math.random() * names.length)];
+            } else {
+                const names = nameData[currentCategory];
+                name = names[Math.floor(Math.random() * names.length)];
+            }
+            
+            currentName = name;
+            
+            // Display the name with animation
+            const nameDisplay = document.querySelector('.name-display');
+            nameDisplay.innerHTML = `<div class="generated-name">${name}</div>`;
+            
+            // Enable copy button
+            document.querySelector('.copy-btn').disabled = false;
+            
+            // Add to history
+            addToHistory(name);
+        }
+
+        function copyToClipboard() {
+            if (currentName) {
+                navigator.clipboard.writeText(currentName).then(() => {
+                    const copyBtn = document.querySelector('.copy-btn');
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    // Fallback for browsers that don't support clipboard API
+                    const textArea = document.createElement('textarea');
+                    textArea.value = currentName;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    const copyBtn = document.querySelector('.copy-btn');
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        function addToHistory(name) {
+            nameHistory.unshift(name);
+            
+            // Keep only last 10 names
+            if (nameHistory.length > 10) {
+                nameHistory = nameHistory.slice(0, 10);
+            }
+            
+            // Update history display
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = nameHistory.map(n => `<div class="history-item">${n}</div>`).join('');
+        }
+
+        // Generate name on Enter key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                generateName();
+            }
+        });
+    </script>
+</body>
+</html>
