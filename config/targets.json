@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "opswatch-api",
+    "name": "OpsWatch API",
+    "url": "http://api:8000/health/live",
+    "interval_seconds": 30,
+    "timeout_seconds": 3
+  },
+  {
+    "slug": "example-website",
+    "name": "Example Website",
+    "url": "https://example.org",
+    "interval_seconds": 60,
+    "timeout_seconds": 5
+  }
+]
